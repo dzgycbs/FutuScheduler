@@ -1,0 +1,31 @@
+# Visual Studio
+.vs/
+
+# Build
+bin/
+build/
+Debug/
+Release/
+x64/
+x86/
+
+# User
+*.user
+*.VC.db
+*.VC.opendb
+
+# Logs
+log/*.log
+
+# Temp
+*.obj
+*.pdb
+*.ilk
+*.idb
+*.ipch
+
+/api-pc/
+/.workbuddy/
+*.ps1
+*.txt
+*.bat
