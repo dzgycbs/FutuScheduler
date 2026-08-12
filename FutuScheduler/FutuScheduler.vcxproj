@@ -132,11 +132,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AutoScheduler.cpp" />
+    <ClCompile Include="HolidayChecker.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MarketManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AutoScheduler.h" />
+    <ClInclude Include="HolidayChecker.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="MarketManager.h" />
   </ItemGroup>

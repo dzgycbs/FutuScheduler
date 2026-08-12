@@ -7,63 +7,65 @@
 #include <functional>
 #include <vector>
 #include <string>
+#include <fstream>
 
 class AutoScheduler {
 public:
-    enum class Action {
-        START,  // 启动业务（开始转发）
-        STOP,   // 停止业务（停止转发）
-        NONE    // 无操作
-    };
+	enum class Action {
+		START,
+		STOP,
+		NONE
+	};
 
-    struct ScheduleRule {
-        int hour;                       // 小时 (0-23)
-        int minute;                     // 分钟 (0-59)
-        Action action;                  // 要执行的动作
-        std::vector<int> weekdays;      // 星期几生效 (1=周一, 7=周日)，空表示每天
-        std::string desc;               // 描述
-    };
+	struct ScheduleRule {
+		int hour;
+		int minute;
+		Action action;
+		std::vector<int> weekdays;
+		std::string desc;
+	};
 
-    AutoScheduler();
-    ~AutoScheduler();
+	AutoScheduler();
+	~AutoScheduler();
 
-    // 禁止拷贝
-    AutoScheduler(const AutoScheduler&) = delete;
-    AutoScheduler& operator=(const AutoScheduler&) = delete;
+	AutoScheduler(const AutoScheduler&) = delete;
+	AutoScheduler& operator=(const AutoScheduler&) = delete;
 
-    // 添加调度规则
-    void addRule(const ScheduleRule& rule);
+	void addRule(const ScheduleRule& rule);
+	void setOnStartBusiness(std::function<void()> callback);
+	void setOnStopBusiness(std::function<void()> callback);
+	void start();
+	void stop();
+	bool isBusinessRunning() const;
 
-    // 设置业务启动回调
-    void setOnStartBusiness(std::function<void()> callback);
+	// 状态持久化
+	void setStateFile(const std::string& path);
 
-    // 设置业务停止回调
-    void setOnStopBusiness(std::function<void()> callback);
-
-    // 启动调度器（在独立线程中运行）
-    void start();
-
-    // 停止调度器
-    void stop();
-
-    // 获取当前业务运行状态
-    bool isBusinessRunning() const;
+	// 立即同步业务状态（启动时调用）
+	void syncBusinessState();
 
 private:
-    // 调度器主循环
-    void run();
+	void run();
+	void checkAndExecute();
+	bool matchRule(const ScheduleRule& rule, const std::tm& tm) const;
+	bool isInBusinessHours(const std::tm& tm) const;
 
-    // 检查并执行调度规则
-    void checkAndExecute();
+	// 【保留】查找最近的规则
+	const ScheduleRule* findNearestRule(const std::tm& tm) const;
 
-    // 判断当前时间是否匹配规则
-    bool matchRule(const ScheduleRule& rule, const std::tm& tm) const;
+	// 【新增】格式化星期
+	std::string formatWeekdays(const std::vector<int>& weekdays) const;
+
+	// 状态持久化
+	void saveState() const;
+	bool loadState();
 
 private:
-    std::vector<ScheduleRule> m_rules;
-    std::atomic<bool> m_running;
-    std::atomic<bool> m_businessRunning;
-    std::thread m_thread;
-    std::function<void()> m_onStart;
-    std::function<void()> m_onStop;
+	std::vector<ScheduleRule> m_rules;
+	std::atomic<bool> m_running;
+	std::atomic<bool> m_businessRunning;
+	std::thread m_thread;
+	std::function<void()> m_onStart;
+	std::function<void()> m_onStop;
+	std::string m_stateFile;
 };

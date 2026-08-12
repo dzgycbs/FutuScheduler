@@ -24,6 +24,9 @@
     <ClCompile Include="MarketManager.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="HolidayChecker.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AutoScheduler.h">
@@ -33,6 +36,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="Logger.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="HolidayChecker.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

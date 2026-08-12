@@ -12,6 +12,25 @@ void signalHandler(int sig) {
     g_shutdown = true;
 }
 
+// 期货交易时间配置
+void setupFuturesScheduler(AutoScheduler& scheduler) {
+    // === 日盘时段 ===
+    // 周一至周五 08:50 启动
+    scheduler.addRule({ 8, 50, AutoScheduler::Action::START, {1,2,3,4,5}, "Day start" });
+    // 周一至周五 15:59 停止
+    scheduler.addRule({ 15, 59, AutoScheduler::Action::STOP, {1,2,3,4,5}, "Day stop" });
+
+    // === 夜盘时段 ===
+    // 周一至周五 20:50 启动（前一天夜盘）
+    scheduler.addRule({ 20, 50, AutoScheduler::Action::START, {1,2,3,4,5}, "Night start" });
+    // 周二至周六 02:35 停止（跨夜）
+    scheduler.addRule({ 2, 35, AutoScheduler::Action::STOP, {2,3,4,5,6}, "Night stop" });
+
+    // === 周末兜底 ===
+    // 周日 00:00 强制停止
+    scheduler.addRule({ 0, 0, AutoScheduler::Action::STOP, {7}, "Sunday fallback" });
+}
+
 int main() {
     // 1. 初始化日志
     Logger::getInstance().init("logs", "market_gateway");
@@ -26,30 +45,8 @@ int main() {
 
     // 4. 创建调度器，配置规则
     AutoScheduler scheduler;
+    setupFuturesScheduler(scheduler);
 
-    // 规则1: 工作日 08:50 启动（提前10分钟准备）
-    scheduler.addRule({
-        8, 50,                           // 08:50
-        AutoScheduler::Action::START,    // 启动
-        {1, 2, 3, 4, 5},                 // 周一到周五
-        "Weekday start at 08:50"
-        });
-
-    // 规则2: 工作日 15:30 停止
-    scheduler.addRule({
-        15, 30,                          // 15:30
-        AutoScheduler::Action::STOP,     // 停止
-        {1, 2, 3, 4, 5},                 // 周一到周五
-        "Weekday stop at 15:30"
-        });
-
-    // 规则3: 周末停止（跨周末兜底）
-    scheduler.addRule({
-        0, 0,                            // 00:00
-        AutoScheduler::Action::STOP,     // 停止
-        {6, 7},                          // 周六周日
-        "Weekend stop at 00:00"
-        });
 
     // 设置回调
     scheduler.setOnStartBusiness([&]() {
