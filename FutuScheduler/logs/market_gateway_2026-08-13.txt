@@ -1,8 +1,0 @@
-[2026-08-13 07:20:28.607] [info] [18932] Logger initialized successfully. Log file: logs/market_gateway.txt
-[2026-08-13 07:20:28.608] [info] [18932] === Market Gateway Starting ===
-[2026-08-13 07:20:28.609] [debug] [18932] Added schedule rule: Weekday start at 08:50 at 08:50
-[2026-08-13 07:20:28.609] [debug] [18932] Added schedule rule: Weekday stop at 15:30 at 15:30
-[2026-08-13 07:20:28.609] [debug] [18932] Added schedule rule: Weekend stop at 00:00 at 00:00
-[2026-08-13 07:20:28.609] [info] [18932] AutoScheduler started with 3 rules
-[2026-08-13 07:20:28.609] [info] [18932] Gateway running. Press Ctrl+C to exit.
-[2026-08-13 07:20:28.611] [debug] [12700] AutoScheduler thread started
