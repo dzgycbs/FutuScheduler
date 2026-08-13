@@ -26,5 +26,6 @@ log/*.log
 
 /api-pc/
 /.workbuddy/
+/logs/
 *.ps1
 *.bat
